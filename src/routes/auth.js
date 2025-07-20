@@ -49,9 +49,11 @@ authRouter.post("/login", async (req, res) => {
 
     if (isPasswordValid) {
       const token = await user.getJWT();
-
       res.cookie("token", token, {
-        expires: new Date(Date.now() + 8 * 3600000),
+        httpOnly: true, // Prevents client-side JS access
+        secure: true, // Cookie only sent on HTTPS
+        sameSite: "None", // Allows cross-origin cookie sharing
+        expires: new Date(Date.now() + 8 * 3600000), // Optional: 8 hours
       });
       res.send(user);
     } else {
